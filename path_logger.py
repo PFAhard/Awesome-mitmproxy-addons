@@ -1,24 +1,19 @@
 """
-Basic skeleton of a mitmproxy addon.
+Addon for logging path
 
-Run as follows: mitmproxy -s anatomy.py
+Run as follows: mitmproxy -s path_logger.py
 """
-from mitmproxy import ctx
-import logging
+from mitmproxy import http
 
-logging.basicConfig(filename='path.log', filemode='w', format='%(message)s')
-
-class Counter:
-    def __init__(self):
-        self.num = 0
-
-    def request(self, flow):
+class Logger:
+    def request(self, flow: http.HTTPFlow):
         path = flow.request.path
         host = flow.request.host
-        logging.warning(host+":"+path)
-
+        with open("path.log", 'a') as file:
+            file.write(host+":"+path+"\n")
+        file.close()
 
 
 addons = [
-    Counter()
+    Logger()
 ]
