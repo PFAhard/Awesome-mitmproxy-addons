@@ -8,7 +8,10 @@ from mitmproxy import http
 class Cookie:
     def request(self, flow: http.HTTPFlow):
         with open("cookie.log", 'a') as file:
-            file.write(flow.request.headers["cookie"]+"\n")
+            try:
+                file.write(flow.request.headers["cookie"]+"\n")
+            except KeyError:
+                pass
         file.close()
 
 
